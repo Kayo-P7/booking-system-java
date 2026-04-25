@@ -1,4 +1,6 @@
-package entities;
+package model.entities;
+
+import model.exceptions.DomainException;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -6,14 +8,17 @@ import java.util.concurrent.TimeUnit;
 
 public class Reservation {
     public static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-    public Integer Number;
-    public Date checkIn;
-    public Date checkOut;
+    private Integer Number;
+    private Date checkIn;
+    private Date checkOut;
 
     public Reservation() {
     }
 
     public Reservation(Integer number, Date checkIn, Date checkOut) {
+        if (checkIn.after(checkOut)) {
+            throw new DomainException("Invalid dates. Check-out date must be after check-in date.");
+        }
         Number = number;
         this.checkIn = checkIn;
         this.checkOut = checkOut;
@@ -41,27 +46,26 @@ public class Reservation {
         return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
     }
 
-    public String updateDate(Date checkIn, Date checkOut) {
+    public void updateDate(Date checkIn, Date checkOut) {
         Date now = new Date();
         if (checkIn.after(checkOut)) {
-            return "Error: Invalid dates. Check-out date must be after check-in date.";
-        } if (checkIn.before(now) || checkOut.before(now)) {
-            return "Error: These dates are not in the future. ";
+            throw new DomainException("Invalid dates. Check-out date must be after check-in date.");
+        }
+        if (checkIn.before(now) || checkOut.before(now)) {
+            throw new DomainException("These dates are not in the future. ");
         }
 
         this.checkIn = checkIn;
         this.checkOut = checkOut;
-        return null;
+
     }
 
     @Override
     public String toString() {
         return "Reservation: " +
                 "Number: " + Number +
-                " checkIn:" + checkIn +
-                " checkOut: " + checkOut +
-                " Nights: " +
-                duration();
-
+                ", check-in: " + sdf.format(checkIn) +
+                ", check-out: " + sdf.format(checkOut) +
+                ", nights: " + duration();
     }
 }
