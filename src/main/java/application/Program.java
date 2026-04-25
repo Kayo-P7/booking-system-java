@@ -37,13 +37,11 @@ public class Program {
             System.out.println("Enter check-out date (dd/MM/yyyy): ");
             checkOut = sdf.parse(sc.next());
 
-            now = new Date();
-            if (checkIn.after(checkOut)) {
-                System.out.println("Error: Invalid dates. Check-out date must be after check-in date.");
-            } else if (checkIn.before(now) || checkOut.before(now)) {
-                System.out.println("Error: These dates are not in the future. ");
+
+            String Error = reservation.updateDate(checkIn, checkOut);
+            if (Error != null) {
+                System.out.println("Error in reservation: " + Error);
             } else {
-                reservation.updateDate(checkIn, checkOut);
                 System.out.println(reservation);
             }
         }
