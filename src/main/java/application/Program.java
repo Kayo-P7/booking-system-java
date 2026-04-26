@@ -1,5 +1,6 @@
 package application;
 
+import libs.Conexao;
 import model.entities.Reservation;
 import model.exceptions.DomainException;
 
@@ -37,14 +38,15 @@ public class Program {
 
             reservation.updateDate(checkIn, checkOut);
             System.out.println(reservation);
-
+            Conexao.salvarReserva(reservation);
         } catch (ParseException e) {
             System.out.println("Invalid date format! ");
 
         } catch (DomainException e) {
             System.out.println("Error in reservation: " + e.getMessage());
         } catch (RuntimeException e) {
-            System.out.println("Unexpected error");;
+            System.out.println("Unexpected error");
+
         }
 
         sc.close();
